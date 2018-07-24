@@ -2,7 +2,7 @@
     <div>
         <div class="form-group">
             <label>Concours</label>
-            <multiselect v-model="conc" :options="concs"  :custom-label="customLabelConc" :showLabels="false" :placeholder="'Choisissez un concours'" @input="filterByConc">
+            <multiselect v-model="conc" :options="concs" :custom-label="customLabelConc" :showLabels="false" :placeholder="'Choisissez un concours'" @input="filterByConc">
                 <template slot="option" slot-scope="props">
                     <table class="table table-sm table-bordered mb-0">
                         <tbody>
