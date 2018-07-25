@@ -3,6 +3,20 @@
         <div class="form-group">
             <label>Concours</label>
             <multiselect v-model="conc" :options="concs" :custom-label="customLabelConc" :showLabels="false" :placeholder="'Choisissez un concours'" @input="filterByConc">
+                <template slot="beforeList">
+                    <li>
+                        <table class="table table-sm table-bordered mb-0">
+                            <thead>
+                            <tr>
+                                <th class="codeconc">Code</th>
+                                <th class="dtconc">Date</th>
+                                <th class="libconc">Libellé</th>
+                                <th class="lieuconc">Lieu</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </li>
+                </template>
                 <template slot="option" slot-scope="props">
                     <table class="table table-sm table-bordered mb-0">
                         <tbody>
@@ -20,8 +34,22 @@
 
         <div class="form-group">
             <label>Animal</label>
-            <multiselect v-model="animal" :options="animalsConc" :custom-label="customLabelAnimal" :showLabels="false" :placeholder="'Choisissez un animal'">
+            <multiselect v-model="animal" :options="animalsConc" :custom-label="customLabelAnimal" :showLabels="false" :placeholder="'Choisissez un animal'" :id="'animal'">
                 <template slot="singleLabel" slot-scope="props">{{ boucleFormatted(props.option) }}</template>
+                <template slot="beforeList">
+                    <li>
+                        <table class="table table-sm table-bordered mb-0">
+                            <thead>
+                            <tr>
+                                <th class="btrav">Btrav</th>
+                                <th class="bsaumon">Boucle</th>
+                                <th class="noman">Nom</th>
+                                <th class="noordre">N° ordre</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </li>
+                </template>
                 <template slot="option" slot-scope="props">
                     <table class="table table-sm table-bordered mb-0">
                         <tbody>
@@ -29,6 +57,7 @@
                             <td class="btrav">{{ props.option.BTRAV }}</td>
                             <td class="bsaumon">{{ boucleFormatted(props.option) }}</td>
                             <td class="noman">{{ props.option.NOMAN }}</td>
+                            <td class="noordre">{{ props.option.NOORDRE }}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -92,8 +121,12 @@ export default {
           }).catch(function (error) {
             window.console.error(error)
           })
+      }, () => {
+        alert('Erreur lors du chargement des données')
       })
     })
+
+    document.getElementById('animal').type = 'number'
   },
   methods: {
     customLabelAnimal (animal) {
@@ -157,11 +190,15 @@ export default {
                             }
 
                             &.bsaumon {
-                                width: 40%;
+                                width: 30%;
                             }
 
                             &.noman {
-                                width: 40%;
+                                width: 35%;
+                            }
+
+                            &.noordre {
+                                width: 15%;
                             }
 
                         }
