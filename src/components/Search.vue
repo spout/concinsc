@@ -7,7 +7,10 @@
                     <table class="table table-sm table-bordered mb-0">
                         <tbody>
                         <tr>
-                            <td>{{ props.option.CODECONC }}</td>
+                            <td class="codeconc">{{ props.option.CODECONC }}</td>
+                            <td class="dtconc">{{ props.option.DTCONC }}</td>
+                            <td class="libconc">{{ props.option.LIBCONC }}</td>
+                            <td class="lieuconc">{{ props.option.LIEUCONC }}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -35,8 +38,10 @@
 
         <table class="table table-bordered" v-if="animal">
             <tr>
-                <td>Code concours</td>
-                <td>{{ animal.CODECONC }}</td>
+                <td>N° ordre</td>
+                <td>
+                    <strong>{{ animal.NOORDRE }}</strong>
+                </td>
             </tr>
             <tr>
                 <td>Boucle</td>
@@ -47,55 +52,68 @@
                 <td>{{ animal.NOMAN }}</td>
             </tr>
             <tr>
-                <td>N° ordre</td>
-                <td>{{ animal.NOORDRE }}</td>
+                <td>Père</td>
+                <td>{{ animal.PERE }}</td>
+            </tr>
+            <tr>
+                <td>Mère</td>
+                <td>{{ animal.MERE }}</td>
             </tr>
         </table>
     </div>
 </template>
 
 <script>
-  import Multiselect from 'vue-multiselect'
-  import _ from 'lodash'
+import Multiselect from 'vue-multiselect'
+import _ from 'lodash'
+import $ from 'jquery'
 
-  export default {
-    name: 'Search',
-    components: {Multiselect},
-    data () {
-      return {
-        conc: null,
-        concs: [],
-        animal: null,
-        animals: [],
-        animalsConc: []
-      }
-    },
-    mounted () {
-      this.$localforage.getItem('animals').then(value => {
-        this.animals = value
-        this.concs = _.uniqBy(value, 'CODECONC')
-      }).catch(function (error) {
-        window.console.error(error)
+export default {
+  name: 'Search',
+  components: {Multiselect},
+  data () {
+    return {
+      conc: null,
+      concs: [],
+      animal: null,
+      animals: [],
+      animalsConc: []
+    }
+  },
+  mounted () {
+    // let exportUrl = 'http://localhost:8080/export.json'
+    // let exportUrl = 'http://localhost/concinsc/export.php'
+    let exportUrl = '/export.json'
+    $.get(exportUrl).done(data => {
+      this.$localforage.setItem('animals', data).then(() => {
+        this.$localforage.getItem('animals').then(value => {
+          this.animals = value
+            this.concs = _.uniqBy(value, 'CODECONC')
+          }).catch(function (error) {
+            window.console.error(error)
+          })
       })
+    })
+  },
+  methods: {
+    customLabelAnimal (animal) {
+      return animal.BTRAV
     },
-    methods: {
-      customLabelAnimal (animal) {
-        return animal.BTRAV
-      },
-      customLabelConc (animal) {
-        return animal.CODECONC
-      },
-      boucleFormatted (animal) {
-        return `${animal.BSAUMON_PAYS}${animal.BSAUMON}`
-      },
-      filterByConc (event) {
-        this.animalsConc = []
-        if (event.CODECONC) {
-          this.animalsConc = _.filter(this.animals, {CODECONC: event.CODECONC})
-        }
+    customLabelConc (animal) {
+      return animal.CODECONC
+    },
+    boucleFormatted (animal) {
+      return `${animal.BSAUMON_PAYS}${animal.BSAUMON}`
+    },
+    filterByConc (event) {
+      this.animal = null
+      this.animalsConc = []
+      if (event.CODECONC) {
+        this.animalsConc = _.filter(this.animals, {CODECONC: event.CODECONC})
       }
     }
   }
+}
 </script>
 
 <style lang="scss">
@@ -112,8 +130,30 @@
                 table {
                     tr {
                         td, th {
+                            &.codeconc {
+                                width: 15%;
+                            }
+
+                            &.dtconc {
+                                width: 15%;
+                            }
+
+                            &.libconc {
+                                width: 40%;
+                            }
+
+                            &.lieuconc {
+                                width: 30%;
+                            }
+                        }
+                    }
+                }
+
+                table {
+                    tr {
+                        td, th {
                             &.btrav {
-                                width: 10%;
+                                width: 20%;
                             }
 
                             &.bsaumon {
@@ -121,7 +161,7 @@
                             }
 
                             &.noman {
-                                width: 50%;
+                                width: 40%;
                             }
 
                         }

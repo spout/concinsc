@@ -18,16 +18,6 @@ const GlobalPlugin = {
   }
 }
 
-if (window.navigator.onLine) {
-  // let exportUrl = 'http://localhost:8080/export.json'
-  // let exportUrl = 'http://localhost/concinsc/export.php'
-  let exportUrl = '/export.json'
-
-  $.get(exportUrl).done(function (data) {
-    localforage.setItem('animals', data)
-  })
-}
-
 Vue.use(GlobalPlugin)
 
 new Vue({
